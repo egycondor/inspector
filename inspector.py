@@ -26,6 +26,9 @@
 import urllib  # Check for new versions from the repo
 import os
 import sys
+# Executing, communicating with, killing processes
+from subprocess import Popen, call, PIPE
+from signal import SIGINT, SIGTERM
 
 ################################
 # GLOBAL VARIABLES IN ALL CAPS #
