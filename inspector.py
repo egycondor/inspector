@@ -24,6 +24,8 @@
 #############
 
 import urllib  # Check for new versions from the repo
+import os
+import sys
 
 ################################
 # GLOBAL VARIABLES IN ALL CAPS #
@@ -41,6 +43,8 @@ GR = '\033[37m'  # gray
 
 REVISION = 87;
 
+
+
 def upgrade():
         """
             Checks for new version, prompts to upgrade, then
@@ -52,24 +56,24 @@ def upgrade():
             revision = get_revision()
             if revision == -1:
                 print R + ' [!]' + O + ' unable to access GitHub' + W
-            elif revision > self.REVISION:
+            elif revision > REVISION:
                 print GR + ' [!]' + W + ' a new version is ' + G + 'available!' + W
                 print GR + ' [-]' + W + '   revision:    ' + G + str(revision) + W
                 response = raw_input(GR + ' [+]' + W + ' do you want to upgrade to the latest version? (y/n): ')
                 if not response.lower().startswith('y'):
                     print GR + ' [-]' + W + ' upgrading ' + O + 'aborted' + W
-                    self.exit_gracefully(0)
+                    exit(0)
                     return
                 # Download script, replace with this one
                 print GR + ' [+] ' + G + 'downloading' + W + ' update...'
                 try:
-                    sock = urllib.urlopen('https://github.com/derv82/inspector/raw/master/inspector.py')
+                    sock = urllib.urlopen('https://github.com/egycondor/inspector/raw/master/inspector.py')
                     page = sock.read()
                 except IOError:
                     page = ''
                 if page == '':
                     print R + ' [+] ' + O + 'unable to download latest version' + W
-                    self.exit_gracefully(1)
+                    exit(1)
 
                 # Create/save the new script
                 f = open('inspector_new.py', 'w')
@@ -95,12 +99,12 @@ def upgrade():
                 returncode = call(['chmod', '+x', 'update_inspector.sh'])
                 if returncode != 0:
                     print R + ' [!]' + O + ' permission change returned unexpected code: ' + str(returncode) + W
-                    self.exit_gracefully(1)
+                    exit(1)
                 # Run the script
                 returncode = call(['sh', 'update_inspector.sh'])
                 if returncode != 0:
                     print R + ' [!]' + O + ' upgrade script returned unexpected code: ' + str(returncode) + W
-                    self.exit_gracefully(1)
+                    exit(1)
 
                 print GR + ' [+] ' + G + 'updated!' + W + ' type "./' + this_file + '" to run again'
 
@@ -109,7 +113,7 @@ def upgrade():
 
         except KeyboardInterrupt:
             print R + '\n (^C)' + O + ' inspector upgrade interrupted' + W
-        self.exit_gracefully(0)
+        exit(0)
 
 def get_revision():
     """
@@ -119,7 +123,7 @@ def get_revision():
     irev = -1
 
     try:
-        sock = urllib.urlopen('https://github.com/derv82/inspector/raw/master/inspector.py')
+        sock = urllib.urlopen('https://github.com/egycondor/inspector/raw/master/inspector.py')
         page = sock.read()
     except IOError:
         return (-1, '', '')
@@ -141,9 +145,9 @@ def get_revision():
 
 if __name__ == '__main__':
 	try:
-		print get_revision()
+		upgrade()
 
 	except KeyboardInterrupt:
        	 	print R + '\n (^C)' + O + ' interrupted\n' + W
   	except EOFError:
-        	print R + '\n (^D)' + O + ' interrupted\n' + W	
+        	print R + '\n (^D)' + O + ' interrupted\n' + W
